@@ -308,3 +308,37 @@ export interface BackendIncident {
   context_modifier: number;
   context_signals: BackendContextSignal[];
 }
+
+export interface DetectionRuleInput {
+  name: string;
+  category: string;
+  detection_type: 'LOCAL' | 'CONTEXTUAL';
+  severity: 'High' | 'Medium' | 'Low';
+  pattern: string;
+  description: string;
+  status?: 'Active' | 'Disabled';
+  protected?: boolean;
+}
+
+export function createDetectionRule(rule: DetectionRuleInput) {
+  return request<{ success: boolean; rule: BackendDetectionRule }>(
+    '/api/detection-rules',
+    {
+      method: 'POST',
+      body: JSON.stringify(rule),
+    },
+  );
+}
+
+export function updateDetectionRule(
+  id: string,
+  rule: Partial<DetectionRuleInput>,
+) {
+  return request<{ success: boolean; rule: BackendDetectionRule }>(
+    `/api/detection-rules/${encodeURIComponent(id)}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(rule),
+    },
+  );
+}
